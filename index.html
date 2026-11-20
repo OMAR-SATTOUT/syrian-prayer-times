@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>مواقيت الصلاة</title>
+    <link rel="icon" type="image/x-icon" href="./imgs/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- <script src="https://cdn.jsdelivr.net/npm/axios@<x.x.x>/dist/axios.min.js"></script> -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===== Base / Reset ===== */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        direction: rtl;
+        background: linear-gradient(
+          313deg,
+          rgba(237, 191, 112, 0.4),
+          rgba(65, 64, 64, 0.98)
+        );
+        background-color: rgb(44, 43, 43);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        font-family: "Tajawal", sans-serif;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        margin: 0px;
+      }
+
+      /* ===== Page layout ===== */
+      .page {
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: clamp(24px, 6vh, 70px) clamp(12px, 3vw, 40px)
+          clamp(24px, 5vh, 48px);
+        padding-left: max(clamp(12px, 3vw, 40px), env(safe-area-inset-left));
+        padding-right: max(clamp(12px, 3vw, 40px), env(safe-area-inset-right));
+        padding-bottom: max(
+          clamp(24px, 5vh, 48px),
+          env(safe-area-inset-bottom)
+        );
+      }
+      .city-block {
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      #city-name {
+        font-weight: 400;
+        font-size: clamp(44px, min(11vw, 20vh), 150px);
+        line-height: 1.15;
+        overflow-wrap: anywhere;
+      }
+      #date {
+        font-weight: 200;
+        font-size: clamp(18px, 3vw, 40px);
+        line-height: 1.5;
+        text-align: center;
+      }
+      .divider {
+        width: clamp(160px, 50%, 700px);
+        margin: 0 auto;
+        border-color: rgb(255 206 123 / 40%);
+        border-width: 1.5px;
+        border-style: solid;
+      }
+
+      /* ===== Prayer cards ===== */
+      .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .prayer-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: clamp(10px, 1.8vw, 28px);
+        margin-top: clamp(24px, 6vh, 80px);
+      }
+      .card {
+        container-type: inline-size;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: clamp(150px, 24vh, 256px);
+        background: white;
+        font-size: 20px;
+        box-shadow: 0px 10px 5px rgb(0 0 0 /30%);
+        border-radius: 15px;
+      }
+      .header {
+        background: linear-gradient(
+          107deg,
+          rgb(106 70 8 / 70%),
+          rgba(44, 43, 43, 0.98)
+        );
+        text-align: center;
+        color: white;
+        border-radius: 15px;
+        padding: 0.4em 0.25em;
+      }
+      .header h1 {
+        padding: 3px;
+        font-weight: 400;
+        font-size: 32px;
+      }
+      .prayer-time {
+        flex: 1 1 auto;
+        padding: 12px 6px;
+      }
+      .time {
+        font-size: 44px;
+        text-align: center;
+        overflow-wrap: anywhere;
+      }
+      /* Scale text with the card width (modern browsers) */
+      @supports (width: 1cqw) {
+        .header h1 {
+          font-size: clamp(20px, 17cqw, 40px);
+        }
+        .time {
+          font-size: clamp(28px, 26cqw, 65px);
+        }
+      }
+
+      /* ===== City selector ===== */
+      .city-picker {
+        margin-top: clamp(24px, 4vh, 40px);
+      }
+      #city-select {
+        width: min(250px, 100%);
+        min-height: 41px;
+        height: auto;
+        padding: 4px 12px;
+        font-size: clamp(18px, 4vw, 25px);
+        border-radius: 20px;
+        font-family: "Tajawal";
+        background: none;
+        border: 2px solid rgb(255 206 123 / 40%);
+        color: white;
+      }
+      #city-select option {
+        background: rgb(44, 43, 43, 0.98);
+        padding: 5px;
+      }
+
+      /* ===== Responsive breakpoints ===== */
+      /* Tablets & small laptops: 3 x 2 */
+      @media (max-width: 1024px) {
+        .prayer-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+      /* Phones: 2 x 3 */
+      @media (max-width: 560px) {
+        .prayer-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .card {
+          min-height: 140px;
+        }
+      }
+      /* Very large screens */
+      @media (min-width: 1800px) {
+        .page {
+          max-width: 1800px;
+        }
+      }
+      /* Landscape phones (short height) */
+      @media (max-height: 480px) and (orientation: landscape) {
+        .page {
+          padding-top: 16px;
+        }
+        .prayer-grid {
+          margin-top: 16px;
+        }
+        .card {
+          min-height: 120px;
+        }
+      }
+      /* iOS ignores fixed backgrounds; avoid janky repaint on touch devices */
+      @media (hover: none) and (pointer: coarse) {
+        body {
+          background-attachment: scroll;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <div class="page">
+        <!-- City Name & Date-->
+        <div class="city-block">
+          <h1 id="city-name">دمشق</h1>
+          <h6 id="date"></h6>
+        </div>
+        <!--// City Name & Date //-->
+
+        <hr class="divider" />
+
+        <!-- Prayer Times -->
+        <div class="prayer-grid">
+          <!-- Card -->
+          <div class="card">
+            <div class="header">
+              <h1>الفجر</h1>
+            </div>
+            <div class="prayer-time center">
+              <h1 class="time" id="fajr-time"></h1>
+            </div>
+          </div>
+          <!--// Card //-->
+
+          <div class="card">
+            <div class="header">
+              <h1>الشروق</h1>
+            </div>
+            <div class="prayer-time center">
+              <h1 class="time" id="sunrise-time"></h1>
+            </div>
+          </div>
+          <!--// Card //-->
+
+          <div class="card">
+            <div class="header">
+              <h1>الظهر</h1>
+            </div>
+            <div class="prayer-time center">
+              <h1 class="time" id="dhuhr-time"></h1>
+            </div>
+          </div>
+          <!--// Card //-->
+
+          <div class="card">
+            <div class="header">
+              <h1>العصر</h1>
+            </div>
+            <div class="prayer-time center">
+              <h1 class="time" id="asr-time"></h1>
+            </div>
+          </div>
+          <!--// Card //-->
+
+          <div class="card">
+            <div class="header">
+              <h1>المغرب</h1>
+            </div>
+            <div class="prayer-time center">
+              <h1 class="time" id="maghrib-time"></h1>
+            </div>
+          </div>
+          <!--// Card //-->
+
+          <div class="card">
+            <div class="header">
+              <h1>العشاء</h1>
+            </div>
+            <div class="prayer-time center">
+              <h1 class="time" id="isha-time"></h1>
+            </div>
+          </div>
+          <!--// Card //-->
+        </div>
+        <!--// Prayer Times //-->
+
+        <!-- Choose City -->
+        <div class="center city-picker">
+          <select name="country" id="city-select"></select>
+        </div>
+        <!--// Change City //-->
+      </div>
+    </div>
+  </body>
+  <script src="node_modules/axios/dist/axios.min.js"></script>
+  <script
+    src="https://kit.fontawesome.com/0d1fce6123.js"
+    crossorigin="anonymous"
+  ></script>
+  <script type="module">
+    // import axios from "./node_modules/axios/dist/esm/axios.min.js";
+    // const axios = require("axios");
+    // import axios from 'https://cdn.jsdelivr.net/npm/axios/+esm';
+    import axios from "axios";
+    const Governorates = [
+      { value: "Damascus", text: "دمشق" },
+      { value: "Aleppo", text: "حلب" },
+      { value: "Homs", text: "حمص" },
+      { value: "Hama", text: "حماة" },
+      { value: "Latakia", text: "اللاذقية" },
+      { value: "Tartus", text: "طرطوس" },
+      { value: "Daraa", text: "درعا" },
+      { value: "Sweida", text: "السويداء" },
+      { value: "DeirEzZor", text: "دير الزور" },
+      { value: "Raqqa", text: "الرقة" },
+      { value: "Hasaka", text: "الحسكة" },
+      { value: "RifDimashq", text: "ريف دمشق" },
+      { value: "Idlib", text: "إدلب" },
+      { value: "Quneitra", text: "القنيطرة" },
+    ];
+    for (let Governorate of Governorates) {
+      const option = document.createElement("option");
+      option.value = Governorate.value;
+      option.textContent = Governorate.text;
+      document.getElementById("city-select").appendChild(option);
+    }
+
+    document
+      .getElementById("city-select")
+      .addEventListener("change", function () {
+        document.getElementById("city-name").innerHTML =
+          this.options[this.selectedIndex].text;
+        GetPrayerTimingsOfCity(this.value);
+      });
+
+    function GetPrayerTimingsOfCity(CityName) {
+      let CityParams = {
+        city: CityName,
+        country: "Syria",
+        method: "3",
+      };
+      axios
+        .get("https://api.aladhan.com/v1/timingsByCity", {
+          params: CityParams,
+        })
+        .then((response) => {
+          const timings = response.data.data.timings;
+          FillTimeForPrayer("fajr-time", timings.Fajr);
+          FillTimeForPrayer("sunrise-time", timings.Sunrise);
+          FillTimeForPrayer("dhuhr-time", timings.Dhuhr);
+          FillTimeForPrayer("asr-time", timings.Asr);
+          FillTimeForPrayer("maghrib-time", timings.Maghrib);
+          FillTimeForPrayer("isha-time", timings.Isha);
+
+          const ReadAbleDate = response.data.data.date.gregorian.date;
+          const Weekday = response.data.data.date.hijri.weekday.ar;
+          const Date = Weekday + "<br>" + ReadAbleDate;
+          document.getElementById("date").innerHTML = Date;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+    GetPrayerTimingsOfCity("Damascus");
+
+    function FillTimeForPrayer(id, time) {
+      document.getElementById(id).innerHTML = time;
+    }
+  </script>
+</html>
