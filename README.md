@@ -54,7 +54,7 @@ It retrieves prayer time data from the Aladhan API and presents it through a sim
 ## 🛠️ Technologies Used
 
 <p align="left">
-  <img src="https://skillicons.dev/icons?i=html,css,js,bootstrap,vite&perline=5" alt="HTML, CSS, JavaScript, Bootstrap and Vite" />
+  <img src="https://skillicons.dev/icons?i=html,css,js,bootstrap,vite,postman" alt="HTML, CSS, JavaScript, Bootstrap and Vite,postman" />
 </p>
 
 - **HTML5:** Structuring the application.
