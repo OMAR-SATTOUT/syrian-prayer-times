@@ -119,7 +119,7 @@ Vite generates the production files inside the `dist` directory.
 
 ## 🌐 Live Demo
 
-[View Syrian Prayer Times](https://prayertimes-sy.netlify.app/)
+[Visit Link ↖️](https://prayertimes-sy.netlify.app/)
 
 ## 👨‍💻 Author
 
